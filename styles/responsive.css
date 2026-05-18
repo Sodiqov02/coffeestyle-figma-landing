@@ -1,0 +1,142 @@
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+
+  .hero {
+    height: 470px;
+    width: min(940px, calc(100% - 48px));
+    margin: 32px auto 0;
+  }
+
+  .hero-art {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 40px;
+  }
+
+  .promo-inner {
+    grid-template-columns: 1fr;
+    gap: 42px;
+    width: min(560px, 100%);
+  }
+
+  .promo-images {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+
+  .promo-main {
+    grid-column: 1 / 3;
+    height: auto;
+    aspect-ratio: 1.8 / 1;
+  }
+
+  .stories-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+  }
+}
+
+@media (max-width: 620px) {
+  .container,
+  .wide-container,
+  .newsletter {
+    width: min(100% - 28px, 940px);
+  }
+
+  .nav {
+    height: 66px;
+  }
+
+  .hero {
+    height: 420px;
+    margin-top: 24px;
+  }
+
+  .hero-content {
+    margin-top: -10px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 34px;
+  }
+
+  .intro {
+    padding: 72px 0;
+  }
+
+  .intro h2,
+  .promo-copy h2 {
+    font-size: 26px;
+  }
+
+  .featured-grid,
+  .product-grid,
+  .stories-grid,
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .products,
+  .featured,
+  .promo,
+  .stories {
+    padding-bottom: 80px;
+  }
+
+  .promo-images {
+    grid-template-columns: 1fr;
+  }
+
+  .promo-main {
+    grid-column: auto;
+  }
+
+  .parallax-image {
+    height: 230px;
+  }
+
+  .newsletter {
+    min-height: auto;
+    margin-bottom: 70px;
+  }
+
+  .subscribe-form {
+    flex-direction: column;
+  }
+
+  .subscribe-form input,
+  .subscribe-form button {
+    width: 100%;
+  }
+
+  .subscribe-form input {
+    padding-inline: 12px;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+  }
+}
+
+@media (max-width: 620px) and (prefers-reduced-motion: no-preference) {
+  .motion-ready .reveal {
+    filter: blur(2px);
+    transform: translateY(12px);
+  }
+
+  .motion-ready .reveal.is-visible {
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
