@@ -132,11 +132,11 @@
 @media (max-width: 620px) and (prefers-reduced-motion: no-preference) {
   .motion-ready .reveal {
     filter: blur(2px);
-    transform: translateY(12px);
+    transform: translate3d(var(--reveal-x, 0), 12px, 0) scale(var(--reveal-scale, 1));
   }
 
   .motion-ready .reveal.is-visible {
     filter: blur(0);
-    transform: translateY(0);
+    transform: translate3d(var(--reveal-x, 0), 0, 0) scale(1);
   }
 }
