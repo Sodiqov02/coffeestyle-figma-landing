@@ -444,6 +444,38 @@
     transform: translateY(-3px);
     box-shadow: 0 14px 30px rgba(29, 31, 46, 0.16);
   }
+
+  .desktop-load-motion {
+    animation: desktop-load-pop 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+
+  .desktop-force-test {
+    animation: desktop-visual-test 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+}
+
+@keyframes desktop-load-pop {
+  from {
+    opacity: 0;
+    transform: translateY(80px) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes desktop-visual-test {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, 80px, 0) scale(0.92) rotate(-4deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1) rotate(0deg);
+  }
 }
 
 .stories {
