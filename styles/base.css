@@ -6,9 +6,9 @@
   --dark: #050827;
   --border: #ececed;
   --white: #ffffff;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --motion-fast: 200ms;
-  --motion-medium: 240ms;
+  --motion-medium: 320ms;
   --motion-slow: 680ms;
 }
 
@@ -189,6 +189,10 @@ h1 {
     animation: hero-image-in 900ms var(--ease) 180ms both;
   }
 
+  .hero-content {
+    animation: hero-content-in 820ms var(--ease) 220ms both;
+  }
+
   .hero .eyebrow,
   .hero h1,
   .hero p,
@@ -274,12 +278,35 @@ h1 {
 @keyframes hero-image-in {
   from {
     opacity: 0;
-    transform: translateX(-50%) scale(1.015);
+    transform: translate3d(-50%, 16px, 0) scale(1.025);
   }
 
   to {
     opacity: 1;
-    transform: translateX(-50%) scale(1);
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+@keyframes hero-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes desktop-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
   }
 }
 

@@ -1,5 +1,6 @@
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isDesktop = window.matchMedia("(min-width: 901px)").matches;
   const selectors = [
     ".intro",
     ".featured .section-title",
@@ -14,15 +15,20 @@
     ".newsletter",
     ".footer-grid > *"
   ];
+  const desktopSelectors = [
+    ".promo-images img",
+    ".promo-copy > *"
+  ];
 
   const markRevealItems = () => {
-    const elements = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector)));
+    const activeSelectors = isDesktop ? selectors.concat(desktopSelectors) : selectors;
+    const elements = activeSelectors.flatMap((selector) => Array.from(document.querySelectorAll(selector)));
     const sectionCounts = new Map();
 
     elements.forEach((element) => {
       element.classList.add("reveal");
 
-      if (element.matches(".product-card, .story, .footer-grid > *")) {
+      if (element.matches(".product-card, .story, .footer-grid > *, .promo-images img, .promo-copy > *")) {
         const parent = element.parentElement;
         const index = sectionCounts.get(parent) || 0;
         sectionCounts.set(parent, index + 1);
