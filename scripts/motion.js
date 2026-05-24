@@ -1,22 +1,15 @@
 (() => {
-  console.log("motion loaded");
-
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isDesktop = window.matchMedia("(min-width: 901px)").matches;
-  const selectorGroups = {
-    hero: ".hero",
-    heroVisual: ".hero-art",
-    heroContent: ".hero-content",
-    heroItems: ".hero .eyebrow, .hero h1, .hero p, .hero .btn",
-    productCards: ".product-card",
-    featuredCards: ".featured-card",
-    promoCards: ".promo-inner, .promo-images img, .promo-copy > *",
-    storyCards: ".story",
-    ctaButtons: ".btn, .cart",
-    sectionTitles: ".section-title",
-    footerItems: ".footer-grid > *"
-  };
+  console.log("motion.js loaded");
+  console.log("desktop:", isDesktop);
+
   const selectors = [
+    ".hero-art",
+    ".hero .eyebrow",
+    ".hero h1",
+    ".hero p",
+    ".hero .btn",
     ".intro",
     ".featured .section-title",
     ".featured .product-card",
@@ -26,10 +19,11 @@
     ".promo-inner",
     ".parallax-image",
     ".stories .section-title",
-    ".stories .story",
+    ".story",
     ".newsletter",
     ".footer-grid > *"
   ];
+
   const desktopSelectors = [
     ".promo-images img",
     ".promo-copy > *"
@@ -37,41 +31,25 @@
 
   const query = (selector) => Array.from(document.querySelectorAll(selector));
 
-  const logSelectorCounts = () => {
-    Object.entries(selectorGroups).forEach(([name, selector]) => {
-      const elements = query(selector);
-      console.log(`${name}:`, elements.length, selector);
-    });
-
-    selectors.concat(isDesktop ? desktopSelectors : []).forEach((selector) => {
-      console.log(`reveal selector "${selector}":`, query(selector).length);
-    });
-  };
-
-  const forceDesktopHeroTest = () => {
-    if (!isDesktop || reduceMotion) return;
-
-    const heroVisual = document.querySelector(".hero-art");
-    const heroContent = document.querySelector(".hero-content");
-
-    console.log("force desktop hero visual:", heroVisual ? 1 : 0);
-    console.log("force desktop hero content:", heroContent ? 1 : 0);
-
-    window.requestAnimationFrame(() => {
-      if (heroVisual) heroVisual.classList.add("desktop-force-test");
-      if (heroContent) heroContent.classList.add("desktop-load-motion");
-    });
-  };
-
   const markRevealItems = () => {
     const activeSelectors = isDesktop ? selectors.concat(desktopSelectors) : selectors;
-    const elements = activeSelectors.flatMap((selector) => query(selector));
+    const elements = [...new Set(activeSelectors.flatMap((selector) => query(selector)))];
     const sectionCounts = new Map();
+    const heroItems = query(".hero-art, .hero .eyebrow, .hero h1, .hero p, .hero .btn");
 
     elements.forEach((element) => {
       element.classList.add("reveal");
 
-      if (element.matches(".product-card, .story, .footer-grid > *, .promo-images img, .promo-copy > *")) {
+      if (element.matches(".hero-art")) {
+        element.style.setProperty("--reveal-x", "-50%");
+        element.style.setProperty("--reveal-y", "30px");
+        element.style.setProperty("--reveal-scale", "1.015");
+      }
+
+      if (heroItems.includes(element)) {
+        const index = heroItems.indexOf(element);
+        element.style.setProperty("--reveal-delay", `${180 + index * 90}ms`);
+      } else if (element.matches(".product-card, .story, .footer-grid > *, .promo-images img, .promo-copy > *")) {
         const parent = element.parentElement;
         const index = sectionCounts.get(parent) || 0;
         sectionCounts.set(parent, index + 1);
@@ -86,16 +64,24 @@
     elements.forEach((element) => element.classList.add("is-visible"));
   };
 
-  const init = () => {
-    logSelectorCounts();
-    forceDesktopHeroTest();
+  const revealAboveFold = (elements, observer) => {
+    elements.forEach((element) => {
+      if (element.classList.contains("is-visible")) return;
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.88) {
+        element.classList.add("is-visible");
+        if (observer) observer.unobserve(element);
+      }
+    });
+  };
 
-    const elements = markRevealItems();
-    console.log("total reveal elements:", elements.length);
+  const init = () => {
+    const revealTargets = markRevealItems();
+    console.log("reveal targets:", revealTargets.length);
     document.body.classList.add("motion-ready");
 
     if (reduceMotion || !("IntersectionObserver" in window)) {
-      revealAll(elements);
+      revealAll(revealTargets);
       return;
     }
 
@@ -114,28 +100,11 @@
       }
     );
 
-    elements.forEach((element) => observer.observe(element));
-
-    window.requestAnimationFrame(() => {
-      elements.forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.95) {
-          element.classList.add("is-visible");
-          observer.unobserve(element);
-        }
-      });
-    });
+    revealTargets.forEach((element) => observer.observe(element));
 
     let ticking = false;
     const revealPassedItems = () => {
-      elements.forEach((element) => {
-        if (element.classList.contains("is-visible")) return;
-        const rect = element.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.88) {
-          element.classList.add("is-visible");
-          observer.unobserve(element);
-        }
-      });
+      revealAboveFold(revealTargets, observer);
       ticking = false;
     };
 
@@ -147,7 +116,10 @@
 
     window.addEventListener("scroll", queueRevealCheck, { passive: true });
     window.addEventListener("resize", queueRevealCheck);
-    queueRevealCheck();
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(queueRevealCheck);
+    });
   };
 
   if (document.readyState === "loading") {
